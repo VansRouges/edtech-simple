@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EdTech SaaS Frontend
+
+## Overview
+This is the **frontend** for the **EdTech SaaS platform**, a web-based application that facilitates communication between parents and teachers. The platform provides a dashboard for tracking **academic performance, event updates, and attendance records**.
+
+The frontend is built using **Next.js, ShadCN UI, and TailwindCSS**, offering a seamless user experience with a modern UI. It integrates with **Appwrite** for authentication and data storage, and **Permit.io** for authorization.
+
+## Features
+- **User Authentication & Role Management:** Powered by **Clerk.js** for authentication and **Permit.io** for fine-grained role-based access control (RBAC).
+- **Multi-Tenant Support:** Schools can manage their own students, teachers, and parents within their unique environments.
+- **Dynamic User Flow:**
+  - Users choose between **"Create your school profile"** or **"Join your school"** after signing up.
+  - School admins must submit a **school profile** for verification before accessing school-related data.
+  - Teachers and parents join existing schools using unique IDs provided by the school admin.
+- **Student & Assignment Management:** Teachers can add students and assignments, track academic progress, and share performance reports.
+- **Real-Time Updates:** Integrated with **WebSockets or polling mechanisms** for live updates on school activities.
+- **Mobile-Responsive UI:** Built with **TailwindCSS** for a fully responsive experience.
+- **Containerized Deployment:** Dockerized for ease of deployment and scalability.
+
+## Tech Stack
+- **Frontend Framework:** Next.js
+- **UI Components:** ShadCN, TailwindCSS
+- **Authentication:** Clerk.js
+- **Authorization:** Permit.io
+- **Backend Services:** Appwrite (for database & API integration)
+- **State Management:** Zustand (with persistence enabled)
+- **Containerization:** Docker
 
 ## Getting Started
+### Prerequisites
+Ensure you have the following installed:
+- **Node.js** (v18+)
+- **pnpm** (preferred) or npm/yarn
+- **Docker** (for containerized deployment, optional)
 
-First, run the development server:
+### Installation
+Clone the repository and install dependencies:
+```sh
+# Clone the repository
+git clone https://github.com/your-repo/edtech-frontend.git
+cd edtech-frontend
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Install dependencies
+pnpm install  # or npm install / yarn install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment Variables
+Create a `.env.local` file in the root directory and configure the following:
+```sh
+NEXT_PUBLIC_APPWRITE_PROJECT_ID=your-appwrite-project-id
+NEXT_PUBLIC_APPWRITE_ENDPOINT=https://your-appwrite-instance
+NEXT_PUBLIC_CLERK_FRONTEND_API=your-clerk-frontend-api
+NEXT_PUBLIC_PERMIT_API_KEY=your-permit-api-key
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Running the Development Server
+Start the development server:
+```sh
+pnpm dev  # or npm run dev / yarn dev
+```
+The application will be available at **http://localhost:3000**.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Building for Production
+To generate an optimized production build:
+```sh
+pnpm build  # or npm run build / yarn build
+```
+To start the production server:
+```sh
+pnpm start  # or npm start / yarn start
+```
 
-## Learn More
+## Docker Deployment
+To run the app inside a Docker container:
+```sh
+docker build -t edtech-frontend .
+docker run -p 3000:3000 edtech-frontend
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Contributing
+We welcome contributions! Please follow these steps:
+1. **Fork the repository** and create a new branch.
+2. Implement your feature or fix.
+3. Ensure all tests pass (`pnpm test`).
+4. Open a **pull request** with a detailed description of your changes.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Issues & Support
+If you encounter any issues, feel free to open an issue in the GitHub repository or reach out to the maintainers.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
+This project is licensed under the **MIT License**. See `LICENSE` for more details.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
