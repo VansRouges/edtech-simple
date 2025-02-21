@@ -32,27 +32,29 @@ export default function TeacherDashboard() {
     async function fetchData() {
       setLoading(true);
       setError("");
-
+    
       try {
         const headers = {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         };
-
+    
+        const payload = JSON.stringify({ email: profile?.email });
+    
         const [studentsRes, assignmentsRes] = await Promise.all([
-          fetch(API_URL_STUDENTS, { headers }),
-          fetch(API_URL_ASSIGNMENTS_GET, { headers }),
+          fetch(API_URL_STUDENTS, { method: "POST", headers, body: payload }),
+          fetch(API_URL_ASSIGNMENTS_GET, { method: "POST", headers, body: payload }),
         ]);
-
+    
         if (!studentsRes.ok) throw new Error(`Students API error: ${await studentsRes.text()}`);
         if (!assignmentsRes.ok) throw new Error(`Assignments API error: ${await assignmentsRes.text()}`);
-
+    
         const studentsData = await studentsRes.json();
         console.log("Students Data:", studentsData);
-
+    
         const assignmentsData = await assignmentsRes.json();
         console.log("Assignments Data:", assignmentsData);
-
+    
         setStudents(studentsData);
         setAssignments(assignmentsData);
       } catch (err) {
