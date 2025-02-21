@@ -23,7 +23,7 @@ export function Hero() {
                 <span className="block text-primary xl:inline">School Administrators and teachers</span>
               </h1>
               <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                Simplify communication and track your student's progress with our comprehensive dashboard. Available on
+                Simplify communication and track your student&apos;s progress with our comprehensive dashboard. Available on
                 web and mobile platforms.
               </p>
               <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">

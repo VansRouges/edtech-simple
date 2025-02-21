@@ -1,10 +1,10 @@
 "use client"
 
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import type { StudentsTable } from "@/types"
 
 
-
-export function StudentsTable({ students }) {
+export function StudentsTables({ students }: { students : StudentsTable[]}) {
   console.log("Students", students)
 
   return (

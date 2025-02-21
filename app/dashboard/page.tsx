@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { StudentsTable } from "@/components/StudentsTable";
-import { AssignmentsTable } from "@/components/AssignmentsTable";
+import { StudentsTables } from "@/components/StudentsTable";
 import { Button } from "@/components/ui/button";
 import { NotAuthorizedDialog } from "@/components/NotAuthorizedDialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -10,34 +9,19 @@ import { useAuthStore } from "@/store/auth";
 import { useProfileStore } from "@/store/profile";
 import { AddStudentDialog } from "@/components/AddStudentDialog";
 import { AddAssignmentDialog } from "@/components/AddAssignmentDialog";
+import {Assignment,  AssignmentsTable, Student, StudentsTable } from "@/types";
+import { AssignmentsTables } from "@/components/AssignmentsTable";
 
-interface Student {
-  firstName: string;
-  lastName: string;
-  gender: string;
-  className: string;
-  gpa: number;
-  creatorEmail: string;
-}
-
-interface Assignment {
-  title: string;
-  subject: string;
-  className: string;
-  teacher: string;
-  dueDate: string;
-  creatorEmail: string;
-}
 
 
 export default function TeacherDashboard() {
-  const { token, user, logout } = useAuthStore();
+  const { token, logout } = useAuthStore();
   const { profile, clearProfile } = useProfileStore();
   const [isNotAuthorizedDialogOpen, setIsNotAuthorizedDialogOpen] = useState(false);
   const [isAddStudentDialogOpen, setIsAddStudentDialogOpen] = useState(false);
   const [isAddAssignmentDialogOpen, setIsAddAssignmentDialogOpen] = useState(false);
-  const [students, setStudents] = useState([]);
-  const [assignments, setAssignments] = useState([]);
+  const [students, setStudents] = useState<StudentsTable[]>([]);
+  const [assignments, setAssignments] = useState<AssignmentsTable[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -85,7 +69,7 @@ export default function TeacherDashboard() {
     fetchData();
   }, [token]);
 
-  const handleAddStudent = async (data: any) => {
+    const handleAddStudent = async (data: Omit<Student, 'creatorEmail'>) => {
     setLoading(true);
     setError("");
   
@@ -124,6 +108,11 @@ export default function TeacherDashboard() {
       setIsAddStudentDialogOpen(false);
       await fetchData();
     } catch (err) {
+      if ((err as Error & { code?: number }).code === 403 && (err as Error).message === "Not authorized") {
+        setIsAddStudentDialogOpen(false);
+        setIsNotAuthorizedDialogOpen(true);
+        return;
+      }
       setError((err as Error).message);
       console.error("Error:", err);
     } finally {
@@ -132,7 +121,7 @@ export default function TeacherDashboard() {
   };
   
 
-  const handleAddAssignment = async (data: any) => {
+    const handleAddAssignment = async (data: Assignment) => {
     setLoading(true);
     setError("");
   
@@ -168,7 +157,7 @@ export default function TeacherDashboard() {
       setAssignments((prevAssignments: Assignment[]) => [...prevAssignments, result]); // Ensure proper typing
       setIsAddAssignmentDialogOpen(false);
     } catch (err) {
-      if(err.code === 403 && err.message === "Not authorized"){
+      if ((err as Error & { code?: number }).code === 403 && (err as Error).message === "Not authorized") {
         setIsAddAssignmentDialogOpen(false);
         setIsNotAuthorizedDialogOpen(true);
         return;
@@ -179,7 +168,6 @@ export default function TeacherDashboard() {
       setLoading(false);
     }
   };
-  
 
   const handleLogout = () => {
     clearProfile();
@@ -206,19 +194,21 @@ export default function TeacherDashboard() {
         </TabsList>
 
         <TabsContent value="students">
-          <StudentsTable students={students} />
+          <StudentsTables students={students} />
           <Button onClick={() => setIsAddStudentDialogOpen(true)}>Add a Student</Button>
         </TabsContent>
 
         <TabsContent value="assignments">
-          <AssignmentsTable assignments={assignments} />
+          <AssignmentsTables assignments={assignments} />
           <Button onClick={() => setIsAddAssignmentDialogOpen(true)}>Add Assignment</Button>
         </TabsContent>
       </Tabs>
 
+      {error && <p className="text-red-500 mt-4">{error}</p>}
+
       <NotAuthorizedDialog open={isNotAuthorizedDialogOpen} onOpenChange={setIsNotAuthorizedDialogOpen} />
-      <AddStudentDialog loading={loading} open={isAddStudentDialogOpen} onOpenChange={setIsAddStudentDialogOpen} onAddStudent={handleAddStudent} />
-      <AddAssignmentDialog open={isAddAssignmentDialogOpen} onOpenChange={setIsAddAssignmentDialogOpen} onAddAssignment={handleAddAssignment} />
+      <AddStudentDialog creatorEmail={profile?.email || ""} loading={loading} open={isAddStudentDialogOpen} onOpenChange={setIsAddStudentDialogOpen} onAddStudent={handleAddStudent} />
+      <AddAssignmentDialog creatorEmail={profile?.email || ""} open={isAddAssignmentDialogOpen} onOpenChange={setIsAddAssignmentDialogOpen} onAddAssignment={handleAddAssignment} />
     </div>
   );
 }

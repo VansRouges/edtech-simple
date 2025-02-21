@@ -1,7 +1,7 @@
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import type { AssignmentsTable } from "@/types"
 
-
-export function AssignmentsTable({ assignments }) {
+export function AssignmentsTables({ assignments }: { assignments: AssignmentsTable[] }) {
   console.log("Assignments", assignments)
 
   return (

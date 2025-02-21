@@ -14,14 +14,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { Assignment } from "@/types"
 
 interface AddAssignmentDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onAddAssignment: (data: any) => void
+  onAddAssignment: (data: Assignment) => void
+  creatorEmail: string
 }
 
-export function AddAssignmentDialog({ open, onOpenChange, onAddAssignment }: AddAssignmentDialogProps) {
+export function AddAssignmentDialog({ open, onOpenChange, onAddAssignment, creatorEmail }: AddAssignmentDialogProps) {
   const [title, setTitle] = useState("")
   const [subject, setSubject] = useState("")
   const [teacher, setTeacher] = useState("")
@@ -31,8 +33,9 @@ export function AddAssignmentDialog({ open, onOpenChange, onAddAssignment }: Add
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Here you would typically send this data to your backend
-    onAddAssignment({ title, subject, teacher, className, dueDate })
-    console.log("New assignment:", { title, subject, class: className, dueDate })
+    const newAssignment = { title, subject, teacher, className, dueDate, creatorEmail }
+    onAddAssignment(newAssignment)
+    console.log("New assignment:", { title, subject, class: className, dueDate, creatorEmail })
     onOpenChange(false)
   }
 
@@ -42,7 +45,7 @@ export function AddAssignmentDialog({ open, onOpenChange, onAddAssignment }: Add
         <DialogHeader>
           <DialogTitle>Add New Assignment</DialogTitle>
           <DialogDescription>
-            Enter the details of the new assignment here. Click save when you're done.
+            Enter the details of the new assignment here. Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>

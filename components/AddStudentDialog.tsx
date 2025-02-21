@@ -12,15 +12,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { Student } from '@/types'
 
 interface AddStudentDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onAddStudent: (data: any) => void
+  onAddStudent: (data: Student) => void
   loading: boolean
+  creatorEmail: string
 }
 
-export function AddStudentDialog({ open, onOpenChange, onAddStudent, loading }: AddStudentDialogProps) {
+export function AddStudentDialog({ open, onOpenChange, onAddStudent, loading, creatorEmail }: AddStudentDialogProps) {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [className, setClassName] = useState('')
@@ -35,7 +37,8 @@ export function AddStudentDialog({ open, onOpenChange, onAddStudent, loading }: 
       lastName, 
       className, 
       gender, 
-      gpa: Number(gpa)
+      gpa: Number(gpa),
+      creatorEmail
     })
     console.log('New student:', { firstName, lastName, className, gender, gpa })
     onOpenChange(false)
@@ -47,7 +50,7 @@ export function AddStudentDialog({ open, onOpenChange, onAddStudent, loading }: 
         <DialogHeader>
           <DialogTitle>Add New Student</DialogTitle>
           <DialogDescription>
-            Enter the details of the new student here. Click save when you're done.
+            Enter the details of the new student here. Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
