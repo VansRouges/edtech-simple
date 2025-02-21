@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 75 29% 95%;           /* Light beige background */
+    --foreground: 0 0% 9%;              /* Dark grey/black text */
+
+    --card: 0 0% 100%;                  /* Pure white (card background) */
+    --card-foreground: 0 0% 9%;         /* Dark grey/black text */
+
+    --popover: 0 0% 99%;                /* Slight off-white (popover) */
+    --popover-foreground: 0 0% 9%;      /* Dark grey/black text */
+
+    --primary: 0 0% 0%;                 /* Black (primary headings) */
+    --primary-foreground: 60 100% 100%; /* White text on primary */
+
+    --secondary: 75 31% 95%;            /* Light grey (used in sections) */
+    --secondary-foreground: 0 0% 9%;    /* Dark grey/black text */
+
+    --muted: 69 30% 95%;                /* Grey (muted text) */
+    --muted-foreground: 0 0% 45%;       /* Medium grey (borders/lines) */
+
+    --accent: 252 29% 97%;              /* Slightly bluish grey (UI elements) */
+    --accent-foreground: 0 0% 9%;       /* Dark grey/black text */
+
+    --destructive: 0 84.2% 60.2%;       /* Red (for destructive actions) */
+    --destructive-foreground: 0 0% 98%; /* Light text on destructive */
+
+    --border: 189 0% 45%;               /* Medium grey (borders/lines) */
+    --input: 155 0% 45%;                /* Grey input borders */
+    --ring: 0 0% 0%;                    /* Black for focus rings */
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
