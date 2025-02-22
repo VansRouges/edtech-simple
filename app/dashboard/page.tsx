@@ -84,7 +84,7 @@ export default function TeacherDashboard() {
       lastName: data.lastName,
       gender: data.gender,
       className: data.className,
-      gpa: data.age,
+      age: data.age,
       creatorEmail: profile?.email,
     };
     console.log("Students payload:", payload);

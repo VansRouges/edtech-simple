@@ -104,8 +104,8 @@ export function AddStudentDialog({ open, onOpenChange, onAddStudent, loading, cr
                   <SelectValue placeholder="Select gender" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Boy">Boy</SelectItem>
-                  <SelectItem value="Girl">Girl</SelectItem>
+                  <SelectItem value="boy">Boy</SelectItem>
+                  <SelectItem value="girl">Girl</SelectItem> 
                 </SelectContent>
               </Select>
             </div>
