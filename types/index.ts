@@ -16,7 +16,7 @@ export interface Student {
   lastName: string;
   gender: string;
   className: string;
-  gpa: number;
+  age: number;
   creatorEmail: string;
 }
 

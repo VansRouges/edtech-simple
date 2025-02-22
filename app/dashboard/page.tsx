@@ -11,7 +11,7 @@ import { AddStudentDialog } from "@/components/AddStudentDialog";
 import { AddAssignmentDialog } from "@/components/AddAssignmentDialog";
 import {Assignment,  AssignmentsTable, Student, StudentsTable } from "@/types";
 import { AssignmentsTables } from "@/components/AssignmentsTable";
-
+import axios from "axios";
 
 
 export default function TeacherDashboard() {
@@ -24,47 +24,51 @@ export default function TeacherDashboard() {
   const [assignments, setAssignments] = useState<AssignmentsTable[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  
 
   const API_URL_STUDENTS = "https://edtech-saas-backend.vercel.app/api/students";
-  const API_URL_ASSIGNMENTS_GET = "https://edtech-saas-backend.vercel.app/api/assignments/get-all";
+  // const API_URL_ASSIGNMENTS_GET = "https://edtech-saas-backend.vercel.app/api/assignments/get-all";
   const API_URL_ASSIGNMENTS = "https://edtech-saas-backend.vercel.app/api/assignments/create";
 
-    async function fetchData() {
-      setLoading(true);
-      setError("");
-    
-      try {
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        };
-    
-        const payload = JSON.stringify({ email: profile?.email });
-    
-        const [studentsRes, assignmentsRes] = await Promise.all([
-          fetch(API_URL_STUDENTS, { method: "POST", headers, body: payload }),
-          fetch(API_URL_ASSIGNMENTS_GET, { method: "POST", headers, body: payload }),
-        ]);
-    
-        if (!studentsRes.ok) throw new Error(`Students API error: ${await studentsRes.text()}`);
-        if (!assignmentsRes.ok) throw new Error(`Assignments API error: ${await assignmentsRes.text()}`);
-    
-        const studentsData = await studentsRes.json();
-        console.log("Students Data:", studentsData);
-    
-        const assignmentsData = await assignmentsRes.json();
-        console.log("Assignments Data:", assignmentsData);
-    
-        setStudents(studentsData);
-        setAssignments(assignmentsData);
-      } catch (err) {
-        setError((err as Error).message);
-        console.error("Error fetching data:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
+  
 
+  async function fetchData() {
+    setLoading(true);
+    setError("");
+  
+    try {
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+  
+      const email = profile?.email;
+      if (!email) throw new Error("Email is required");
+  
+      // Construct the URLs with email as a path parameter
+      const studentsUrl = `https://edtech-saas-backend.vercel.app/api/students/${email}`;
+      const assignmentsUrl = `https://edtech-saas-backend.vercel.app/api/assignments/${email}`;
+  
+      // Using axios.all to send both requests in parallel
+      const [studentsRes, assignmentsRes] = await axios.all([
+        axios.get(studentsUrl, { headers }),
+        axios.get(assignmentsUrl, { headers }),
+      ]);
+  
+      console.log("Students Data:", studentsRes.data);
+      console.log("Assignments Data:", assignmentsRes.data);
+  
+      setStudents(studentsRes.data);
+      setAssignments(assignmentsRes.data);
+    } catch (err) {
+      setError((err as Error).message);
+      console.error("Error fetching data:", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+  
+  
   useEffect(() => {
     if (!token) return;
 
@@ -80,7 +84,7 @@ export default function TeacherDashboard() {
       lastName: data.lastName,
       gender: data.gender,
       className: data.className,
-      gpa: data.gpa,
+      gpa: data.age,
       creatorEmail: profile?.email,
     };
     console.log("Students payload:", payload);
