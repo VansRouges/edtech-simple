@@ -36,37 +36,44 @@ export default function TeacherDashboard() {
     setLoading(true);
     setError("");
   
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
+  
+    const email = profile?.email;
+    if (!email) {
+      setError("Email is required");
+      return;
+    }
+  
+    // Construct the URLs with email as a path parameter
+    const studentsUrl = `https://edtech-saas-backend.vercel.app/api/students/${email}`;
+    const assignmentsUrl = `https://edtech-saas-backend.vercel.app/api/assignments/${email}`;
+  
+    // Fetch students data separately
     try {
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      };
-  
-      const email = profile?.email;
-      if (!email) throw new Error("Email is required");
-  
-      // Construct the URLs with email as a path parameter
-      const studentsUrl = `https://edtech-saas-backend.vercel.app/api/students/${email}`;
-      const assignmentsUrl = `https://edtech-saas-backend.vercel.app/api/assignments/${email}`;
-  
-      // Using axios.all to send both requests in parallel
-      const [studentsRes, assignmentsRes] = await axios.all([
-        axios.get(studentsUrl, { headers }),
-        axios.get(assignmentsUrl, { headers }),
-      ]);
-  
+      const studentsRes = await axios.get(studentsUrl, { headers });
       console.log("Students Data:", studentsRes.data);
-      console.log("Assignments Data:", assignmentsRes.data);
-  
       setStudents(studentsRes.data);
+    } catch (err) {
+      console.warn("Failed to fetch students data:", err);
+      setStudents([]); // Ensure state is updated to avoid undefined errors
+    }
+  
+    // Fetch assignments data separately
+    try {
+      const assignmentsRes = await axios.get(assignmentsUrl, { headers });
+      console.log("Assignments Data:", assignmentsRes.data);
       setAssignments(assignmentsRes.data);
     } catch (err) {
+      console.error("Error fetching assignments data:", err);
       setError((err as Error).message);
-      console.error("Error fetching data:", err);
     } finally {
       setLoading(false);
     }
   }
+  
   
   
   useEffect(() => {
@@ -193,22 +200,31 @@ export default function TeacherDashboard() {
         <Button variant="default" onClick={handleLogout}>Log out</Button>
       </div>
 
-      <Tabs defaultValue="students" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="students">Students</TabsTrigger>
-          <TabsTrigger value="assignments">Assignments</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="students">
-          <StudentsTables students={students} />
-          <Button onClick={() => setIsAddStudentDialogOpen(true)}>Add a Student</Button>
-        </TabsContent>
-
-        <TabsContent value="assignments">
+      {profile?.role === 'Student' 
+      ?  (
+        <div>
           <AssignmentsTables assignments={assignments} />
-          <Button onClick={() => setIsAddAssignmentDialogOpen(true)}>Add Assignment</Button>
-        </TabsContent>
-      </Tabs>
+          {/* <Button onClick={() => setIsAddAssignmentDialogOpen(true)}>Add Assignment</Button> */}
+        </div> 
+        )
+        : (
+          <Tabs defaultValue="students" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="students">Students</TabsTrigger>
+              <TabsTrigger value="assignments">Assignments</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="students">
+              <StudentsTables students={students} />
+              <Button onClick={() => setIsAddStudentDialogOpen(true)}>Add a Student</Button>
+            </TabsContent>
+
+            <TabsContent value="assignments">
+              <AssignmentsTables assignments={assignments} />
+              <Button onClick={() => setIsAddAssignmentDialogOpen(true)}>Add Assignment</Button>
+            </TabsContent>
+          </Tabs>
+        )}
 
       {error && <p className="text-red-500 mt-4">{error}</p>}
 

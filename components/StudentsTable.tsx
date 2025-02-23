@@ -27,7 +27,7 @@ export function StudentsTables({ students }: { students : StudentsTable[]}) {
             <TableCell>{student.className}</TableCell>
             <TableCell>{student.gender}</TableCell>
             <TableCell>{student.age}</TableCell>
-          </TableRow>
+          </TableRow> 
         ))}
       </TableBody>
     </Table>
